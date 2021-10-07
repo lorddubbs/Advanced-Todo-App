@@ -52,7 +52,7 @@
                         <div class="top-main-user height-fix-2">
                           <div class="user-notification u-n-user">
                                 <div class="notification-bell">
-                                    <router-link :to="{name: 'tasks' }" v-if="user !== null" class="u-notify-color-user">
+                                    <router-link :to="{name: 'tasks' }" v-if="userName !== null" class="u-notify-color-user">
                                       <i class="fas fa-tasks"></i>
                                     </router-link>
                                 </div>
