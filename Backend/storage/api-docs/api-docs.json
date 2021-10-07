@@ -1,0 +1,1347 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "Simple TODO  API Documentation",
+        "description": "Service Documentation",
+        "contact": {
+            "email": "info@std.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost/todo/v1",
+            "description": "STD API Server"
+        }
+    ],
+    "paths": {
+        "/register": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Authority: Any | Create a new user",
+                "description": "Creates a new user account",
+                "operationId": "createUser",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateUser"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User account created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "422": {
+                        "description": "The given data was invalid."
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Authority: Any | User Login",
+                "description": "Authenticate an existing user and retrieve a token.",
+                "operationId": "e7e8613e60681ad04c87a47062e1ee16",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "email": "Your email address",
+                                    "password": "Your password"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Authentication. Access Token Returned",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "success": "true",
+                                    "status_code": 200,
+                                    "token_type": "Bearer",
+                                    "expires_in": 1296000,
+                                    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJyJhdWQiOiIyIiwianRpIjoiNWJmNDY4OTFhYmJmYjk1YzQwN2E1MzNkZjMxNmEzNDMzZDBlZmI2ZDc4NmI0NmMwNjgwODFjODg0N2E3MDVjYTk4ZDNiMTVlODI1ZDcwYjQiLCJpYXQiaX0...."
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/email/verification/resend": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Authority: Any | Resend Verification link",
+                "operationId": "82de378512bf3903c7154d2f8fb5e7d4",
+                "responses": {
+                    "200": {
+                        "description": "Verification link is sent"
+                    },
+                    "401": {
+                        "description": "Unauthenticated. Token Needed."
+                    },
+                    "403": {
+                        "description": "Unauthorized. User not with access role"
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Authority: Any | Logout the currently logged in user",
+                "description": "Revokes token",
+                "operationId": "87c8bcc7029e5c36c30e15f947746d68",
+                "responses": {
+                    "200": {
+                        "description": "User Logged out successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated. Token needed"
+                    }
+                }
+            }
+        },
+        "/reset-password-request": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Password reset email",
+                "description": "This endpoint sends the user a password reset email",
+                "operationId": "passwordReset",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "peter_oduntan@yahoo.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Kindly check your inbox, we have sent a password reset link."
+                    },
+                    "404": {
+                        "description": "Email does not exist."
+                    }
+                }
+            }
+        },
+        "/update-password": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Resets password",
+                "description": "This endpoint resets a user's password",
+                "operationId": "UpdatePassword",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "token",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "token": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "token": "ClRIsugfJCVLuQSnr",
+                                    "password": "password",
+                                    "password_confirmation": "password"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password updated successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated. Token Needed."
+                    }
+                }
+            }
+        },
+        "/category": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Authority: Users | Get all Categories",
+                "description": "This endpoint retrieves all categories",
+                "operationId": "categoryIndex",
+                "responses": {
+                    "200": {
+                        "description": "Categories retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Category"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Authority: User | Create a new Category",
+                "description": "This endpoint creates a new Category.",
+                "operationId": "createCategory",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateCategory"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Category created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Category"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized. User not with access role"
+                    },
+                    "422": {
+                        "description": "The given data was invalid."
+                    }
+                }
+            }
+        },
+        "/category/{categoryId}": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Authority: User | Get details of a Category by ID",
+                "description": "This endpoint returns all related data of specified category",
+                "operationId": "getCategory",
+                "responses": {
+                    "200": {
+                        "description": "Category retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Category"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated. Token needed"
+                    },
+                    "403": {
+                        "description": "Unauthorized. User not with access role"
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Authority: User | Update a Category | Please use x-www-form-urlencoded for body",
+                "description": "This endpoint updates the category",
+                "operationId": "updateCategory",
+                "parameters": [
+                    {
+                        "name": "categoryId",
+                        "in": "path",
+                        "description": "Category ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateCategory"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Category updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Category"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized. User not with access role"
+                    },
+                    "404": {
+                        "description": "Category not found"
+                    },
+                    "422": {
+                        "description": "The given data was invalid."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Authority: User | Delete a Category",
+                "description": "This endpoint deletes the selected Category",
+                "operationId": "deleteCategory",
+                "parameters": [
+                    {
+                        "name": "categoryId",
+                        "in": "path",
+                        "description": "Category ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Category deleted successfully"
+                    },
+                    "403": {
+                        "description": "Unauthorized. User not with access role"
+                    },
+                    "404": {
+                        "description": "Category not found"
+                    },
+                    "422": {
+                        "description": "The given data was invalid."
+                    }
+                }
+            }
+        },
+        "/comment/task/{taskId}": {
+            "get": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Authority: Users | Get all Comments for a Category",
+                "description": "This endpoint retrieves all comments",
+                "operationId": "commentIndex",
+                "responses": {
+                    "200": {
+                        "description": "Comments retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Comment"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/comment": {
+            "post": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Authority: User | Create a new Comment",
+                "description": "This endpoint creates a new Comment.",
+                "operationId": "createComment",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateComment"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Comment created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Comment"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized. User not with access role"
+                    },
+                    "422": {
+                        "description": "The given data was invalid."
+                    }
+                }
+            }
+        },
+        "/comment/{commentId}": {
+            "get": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Authority: User | Get details of a Comment by ID",
+                "description": "This endpoint returns all related data of specified comment",
+                "operationId": "getComment",
+                "responses": {
+                    "200": {
+                        "description": "Comment retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Comment"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated. Token needed"
+                    },
+                    "403": {
+                        "description": "Unauthorized. User not with access role"
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Authority: User | Update a Comment | Please use x-www-form-urlencoded for body",
+                "description": "This endpoint updates the comment",
+                "operationId": "updateComment",
+                "parameters": [
+                    {
+                        "name": "commentId",
+                        "in": "path",
+                        "description": "Comment ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateComment"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Comment updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Comment"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized. User not with access role"
+                    },
+                    "404": {
+                        "description": "Comment not found"
+                    },
+                    "422": {
+                        "description": "The given data was invalid."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Authority: User | Delete a Comment",
+                "description": "This endpoint deletes the selected Comment",
+                "operationId": "deleteComment",
+                "parameters": [
+                    {
+                        "name": "commentId",
+                        "in": "path",
+                        "description": "Comment ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Comment deleted successfully"
+                    },
+                    "403": {
+                        "description": "Unauthorized. User not with access role"
+                    },
+                    "404": {
+                        "description": "Comment not found"
+                    },
+                    "422": {
+                        "description": "The given data was invalid."
+                    }
+                }
+            }
+        },
+        "/task": {
+            "get": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Authority: User | Get all Tasks",
+                "description": "This endpoint retrieves all tasks",
+                "operationId": "taskIndex",
+                "responses": {
+                    "200": {
+                        "description": "Tasks retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Task"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Authority: User | Create a new Task",
+                "description": "This endpoint creates a new Task.",
+                "operationId": "createTask",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateTask"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Task created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Task"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized. User not with access role"
+                    },
+                    "422": {
+                        "description": "The given data was invalid."
+                    }
+                }
+            }
+        },
+        "/task/{taskId}": {
+            "get": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Authority: User | Get details of a Task by ID",
+                "description": "This endpoint returns all related data of specified task",
+                "operationId": "getTask",
+                "responses": {
+                    "200": {
+                        "description": "Task retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Task"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated. Token needed"
+                    },
+                    "403": {
+                        "description": "Unauthorized. User not with access role"
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Authority: User | Update a Task | Please use x-www-form-urlencoded for body",
+                "description": "This endpoint updates the task",
+                "operationId": "updateTask",
+                "parameters": [
+                    {
+                        "name": "taskId",
+                        "in": "path",
+                        "description": "Task ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateTask"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Task updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Task"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized. User not with access role"
+                    },
+                    "404": {
+                        "description": "Task not found"
+                    },
+                    "422": {
+                        "description": "The given data was invalid."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Authority: User | Delete a Task",
+                "description": "This endpoint deletes the selected Task",
+                "operationId": "deleteTask",
+                "parameters": [
+                    {
+                        "name": "taskId",
+                        "in": "path",
+                        "description": "Task ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Task deleted successfully"
+                    },
+                    "403": {
+                        "description": "Unauthorized. User not with access role"
+                    },
+                    "404": {
+                        "description": "Task not found"
+                    },
+                    "422": {
+                        "description": "The given data was invalid."
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Authority: Any | Get all Users",
+                "description": "This endpoint retrieves all users",
+                "operationId": "userIndex",
+                "responses": {
+                    "200": {
+                        "description": "Users retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/updateProfile": {
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Authority: User | Update authenticated User | Please use x-www-form-urlencoded for body",
+                "description": "This endpoint updates the current user",
+                "operationId": "updateUser",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateUser"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized. User not with access role"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "422": {
+                        "description": "The given data was invalid."
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Category": {
+                "title": "Category",
+                "description": "Category model",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "name": {
+                        "title": "name",
+                        "description": "The name of the Category",
+                        "type": "string",
+                        "example": "Laundry"
+                    },
+                    "created_at": {
+                        "title": "Created at",
+                        "description": "Created at",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2021-09-27 17:50:45"
+                    },
+                    "updated_at": {
+                        "title": "Updated at",
+                        "description": "Updated at",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2021-09-27 17:50:45"
+                    },
+                    "user_id": {
+                        "title": "user_id",
+                        "description": "User ID",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Category"
+                }
+            },
+            "Comment": {
+                "title": "Comment",
+                "description": "Comment model",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "comment": {
+                        "title": "comment",
+                        "description": "The text of the comment",
+                        "type": "string",
+                        "example": "Procastination does not become me"
+                    },
+                    "created_at": {
+                        "title": "Created at",
+                        "description": "Created at",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2021-09-27 17:50:45"
+                    },
+                    "updated_at": {
+                        "title": "Updated at",
+                        "description": "Updated at",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2021-09-27 17:50:45"
+                    },
+                    "task_id": {
+                        "title": "task_id",
+                        "description": "Task ID",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "task": {
+                        "$ref": "#/components/schemas/Task"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Comment"
+                }
+            },
+            "Task": {
+                "title": "Task",
+                "description": "Task model",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "title": {
+                        "title": "title",
+                        "description": "The title of the Task",
+                        "type": "string",
+                        "example": "Lead a Series E"
+                    },
+                    "description": {
+                        "title": "description",
+                        "description": "The description of the Task",
+                        "type": "string",
+                        "example": "Becoming a Unicorn"
+                    },
+                    "thumbnail": {
+                        "title": "thumbnail",
+                        "description": "The image of the Task",
+                        "type": "string",
+                        "example": "https://res.cloudinary.com/dtgglytjm/image/upload/v1612307531/Files/i9gts5zn0wiusxekrrjz.png"
+                    },
+                    "priority": {
+                        "title": "priority",
+                        "description": "The priority level of the Task",
+                        "type": "string",
+                        "example": "high"
+                    },
+                    "start_date": {
+                        "title": "start_date",
+                        "description": "Start date of Task",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2020-01-27 17:50:45"
+                    },
+                    "end_date": {
+                        "title": "end_date",
+                        "description": "End date of Task",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2020-01-27 17:50:45"
+                    },
+                    "access": {
+                        "title": "access",
+                        "description": "The access type of the Task",
+                        "type": "boolean",
+                        "example": "0"
+                    },
+                    "status": {
+                        "title": "status",
+                        "description": "The status of the Task",
+                        "type": "string",
+                        "example": "completed"
+                    },
+                    "created_at": {
+                        "title": "Created at",
+                        "description": "Created at",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2021-09-27 17:50:45"
+                    },
+                    "updated_at": {
+                        "title": "Updated at",
+                        "description": "Updated at",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2021-09-27 17:50:45"
+                    },
+                    "user_id": {
+                        "title": "user_id",
+                        "description": "User ID",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Task"
+                }
+            },
+            "User": {
+                "title": "User",
+                "description": "User model",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "name": {
+                        "title": "name",
+                        "description": "The name of the User",
+                        "type": "string",
+                        "example": "Peter Oduntan"
+                    },
+                    "email": {
+                        "title": "email",
+                        "description": "The email of the User",
+                        "type": "string",
+                        "example": "peter_oduntan@yahoo.com"
+                    },
+                    "thumbnail": {
+                        "title": "thumbnail",
+                        "description": "The image of the User",
+                        "type": "string",
+                        "example": "https://example.com/image.png"
+                    },
+                    "created_at": {
+                        "title": "Created at",
+                        "description": "Created at",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2021-09-27 17:50:45"
+                    },
+                    "updated_at": {
+                        "title": "Updated at",
+                        "description": "Updated at",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2021-09-27 17:50:45"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "User"
+                }
+            },
+            "CreateCategory": {
+                "title": "Create Category Request",
+                "description": "Create Category Request Body Data",
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "title": "name",
+                        "description": "The name of the category",
+                        "type": "string",
+                        "example": "Laundry"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateComment": {
+                "title": "Create Comment Request",
+                "description": "Create Comment Request Body Data",
+                "required": [
+                    "comment"
+                ],
+                "properties": {
+                    "comment": {
+                        "title": "comment",
+                        "description": "The text of the comment",
+                        "type": "string",
+                        "example": "Procastination will never win"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateTask": {
+                "title": "Create Task Request",
+                "description": "Body Data",
+                "required": [
+                    "title",
+                    "description",
+                    "thumbnail",
+                    "priority",
+                    "start-date",
+                    "end_date",
+                    "access",
+                    "status"
+                ],
+                "properties": {
+                    "title": {
+                        "title": "title",
+                        "description": "The title of the Task",
+                        "type": "string",
+                        "example": "Doing Laundry"
+                    },
+                    "description": {
+                        "title": "description",
+                        "description": "The description of the task created",
+                        "type": "string",
+                        "example": "Going to the Laundry mart"
+                    },
+                    "thumbnail": {
+                        "title": "thumbnail",
+                        "description": "The image of the Task",
+                        "type": "string",
+                        "example": "https://en.wikipedia.org/image.png"
+                    },
+                    "priority": {
+                        "title": "priority",
+                        "description": "The priority level of the Task",
+                        "type": "string",
+                        "example": "low"
+                    },
+                    "start_date": {
+                        "title": "start_date",
+                        "description": "Start date of Task",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2020-01-27 17:50:45"
+                    },
+                    "end_date": {
+                        "title": "end_date",
+                        "description": "End date of Task",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2020-01-27 17:50:45"
+                    },
+                    "access": {
+                        "title": "access",
+                        "description": "The access type of the Task",
+                        "type": "string",
+                        "example": 1
+                    },
+                    "status": {
+                        "title": "status",
+                        "description": "The status of the Task",
+                        "type": "string",
+                        "example": "completed"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateUser": {
+                "title": "User Creation Request",
+                "description": "User Request Body Data",
+                "required": [
+                    "name",
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "name": {
+                        "title": "name",
+                        "description": "The name of the user",
+                        "type": "string",
+                        "example": "Peter"
+                    },
+                    "email": {
+                        "title": "email",
+                        "description": "The email of the user",
+                        "type": "string",
+                        "example": "peter_oduntan@yahoo.com"
+                    },
+                    "password": {
+                        "title": "password",
+                        "description": "The password of the user",
+                        "type": "string",
+                        "example": "Secret123"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateCategory": {
+                "title": "Update Category Request",
+                "description": "Update Category Request Body Data",
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "title": "name",
+                        "description": "The name of the category",
+                        "type": "string",
+                        "example": "Interviews"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateComment": {
+                "title": "Update Comment Request",
+                "description": "Create Comment Request Body Data",
+                "required": [
+                    "comment"
+                ],
+                "properties": {
+                    "comment": {
+                        "title": "comment",
+                        "description": "The text of the comment",
+                        "type": "string",
+                        "example": "Procastination will never win"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateTask": {
+                "title": "Create Task Request",
+                "description": "Body Data",
+                "required": [
+                    "title",
+                    "description",
+                    "thumbnail",
+                    "priority",
+                    "start-date",
+                    "end_date",
+                    "access",
+                    "status"
+                ],
+                "properties": {
+                    "title": {
+                        "title": "title",
+                        "description": "The title of the Task",
+                        "type": "string",
+                        "example": "Doing Laundry"
+                    },
+                    "description": {
+                        "title": "description",
+                        "description": "The description of the task created",
+                        "type": "string",
+                        "example": "Going to the Laundry mart"
+                    },
+                    "thumbnail": {
+                        "title": "thumbnail",
+                        "description": "The image of the Task",
+                        "type": "string",
+                        "example": "https://en.wikipedia.org/image.png"
+                    },
+                    "priority": {
+                        "title": "priority",
+                        "description": "The priority level of the Task",
+                        "type": "string",
+                        "example": "low"
+                    },
+                    "start_date": {
+                        "title": "start_date",
+                        "description": "Start date of Task",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2020-01-27 17:50:45"
+                    },
+                    "end_date": {
+                        "title": "end_date",
+                        "description": "End date of Task",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2020-01-27 17:50:45"
+                    },
+                    "access": {
+                        "title": "access",
+                        "description": "The access type of the Task",
+                        "type": "string",
+                        "example": 1
+                    },
+                    "status": {
+                        "title": "status",
+                        "description": "The status of the Task",
+                        "type": "string",
+                        "example": "completed"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateUser": {
+                "title": "User Creation Request",
+                "description": "User Request Body Data",
+                "required": [
+                    "name",
+                    "email",
+                    "password",
+                    "thumbnail"
+                ],
+                "properties": {
+                    "name": {
+                        "title": "name",
+                        "description": "The name of the user",
+                        "type": "string",
+                        "example": "Peter"
+                    },
+                    "email": {
+                        "title": "email",
+                        "description": "The email of the user",
+                        "type": "string",
+                        "example": "peter_oduntan@yahoo.com"
+                    },
+                    "password": {
+                        "title": "password",
+                        "description": "The password of the user",
+                        "type": "string",
+                        "example": "Secret123"
+                    },
+                    "thumbnail": {
+                        "title": "thumbnail",
+                        "description": "The image of the User",
+                        "type": "string",
+                        "example": "https://example.com/image.png"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateUserPassword": {
+                "title": "User Password Update Request",
+                "description": "User Password Request Body Data",
+                "required": [
+                    "password",
+                    "password_confirmation"
+                ],
+                "properties": {
+                    "password": {
+                        "title": "password",
+                        "description": "The password of the user",
+                        "type": "string",
+                        "example": "Secret123"
+                    },
+                    "password_confirmation": {
+                        "title": "password",
+                        "description": "Confirm the password of the user",
+                        "type": "string",
+                        "example": "Secret123"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "security": [
+        []
+    ]
+}

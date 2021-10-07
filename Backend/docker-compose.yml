@@ -1,0 +1,170 @@
+version: '3.7'
+
+networks:
+    std-network:
+        driver: bridge
+services:
+
+  # nginx
+    std-nginx:
+        build:
+            context: ./.docker
+            dockerfile: nginx.dockerfile
+            args:
+                - NGINXUSER=${NGINXUSER:-www-data}
+                - NGINXGROUP=${NGINXGROUP:-www-data}
+        container_name: std-nginx
+        restart: always
+        ports:
+            - 80:80
+        volumes:
+            - .:/var/www/html:delegated
+            - ./.docker/nginx/conf:/etc/nginx/conf.d
+
+        depends_on:
+            - std-db
+            - std-phpmyadmin
+        networks:
+            - std-network
+        healthcheck:
+            test: ["CMD", "service", "nginx", "status"]
+            retries: 3
+            timeout: 5s
+
+  # mysql
+    std-db:
+        image: 'mysql:8.0'
+        container_name: std-db
+        restart: always
+        tty: true
+        ports:
+            - '3306:3306'
+        environment:
+            MYSQL_DATABASE: '${DB_DATABASE}'
+            MYSQL_USER: '${DB_USERNAME}'
+            MYSQL_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ALLOW_EMPTY_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+        volumes:
+            - './.docker/mysql/data:/var/lib/mysql'
+        networks:
+            - std-network
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
+            retries: 3
+            timeout: 5s
+
+  # phpmyadmin
+    std-phpmyadmin:
+        depends_on:
+            - std-db
+        image: phpmyadmin/phpmyadmin
+        container_name: std-phpmyadmin
+        restart: always
+        ports:
+            - '8000:80'
+        environment:
+            PMA_HOST: std-db
+            MYSQL_ROOT_PASSWORD: secret
+        networks:
+            - std-network
+
+  # php (std app)
+    php:
+        build:
+            context: ./.docker
+            dockerfile: php.dockerfile
+            args:
+                - PHPUSER=${PHPUSER:-www-data}
+                - PHPGROUP=${PHPGROUP:-www-data}
+        container_name: std-app
+        volumes:
+            - .:/var/www/html:delegated
+        depends_on:
+            - std-db
+        networks:
+            - std-network
+
+  # redis
+    std-redis:
+        image: redis:alpine
+        container_name: std-redis
+        restart: unless-stopped
+        ports:
+            - 6376:6379
+        volumes: 
+            - './.docker/redis/data:/data'
+        networks:
+            - std-network
+
+  # mailhog
+    mailhog:
+        image: mailhog/mailhog:latest
+        container_name: std-mailhog
+        restart: unless-stopped
+        ports: 
+            - 1025:1025
+            - 8025:8025
+        networks: 
+            - std-network
+  
+  # queue
+    queue:
+        container_name: std-queue
+        restart: always
+        build:
+            context: ./.docker
+            dockerfile: php.dockerfile
+        command: ["php", "artisan", "queue:work"]
+        volumes:
+            - .:/var/www/html:delegated
+        healthcheck:
+            test: [ "CMD-SHELL", "ps -ef || exit 1" ]
+            interval: 10s
+            timeout: 30s
+            retries: 3
+        depends_on:
+            - php
+            - redis
+        networks:
+            - std-network
+
+  # scheduler
+    scheduler:
+        container_name: std-scheduler
+        restart: always
+        build:
+            context: ./.docker
+            dockerfile: php.dockerfile
+        command: ["php", "artisan", "schedule:run"]
+        volumes:
+            #- ./.docker/run.sh:/run.sh
+            - .:/var/www/html:delegated
+        healthcheck:
+            test: [ "CMD-SHELL", "ps -ef || exit 1" ]
+            interval: 10s
+            timeout: 30s
+            retries: 3
+        depends_on:
+            - php
+            - queue
+            #working_dir: /var/www/html
+        networks:
+            - std-network
+        
+  
+  # elasticsearch
+    elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
+        container_name: std-elasticsearch
+        environment:
+            - discovery.type=single-node
+        ports:
+            - 9200:9200
+            - 9300:9300
+        volumes:
+            - './.docker/elasticsearch/data:/usr/share/elasticsearch/data'
+        networks:
+            - std-network
+
+  
