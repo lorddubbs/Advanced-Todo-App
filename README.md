@@ -85,4 +85,6 @@ http://localhost/todo/docs
 4. Create a configuration file for the Scheduler and monitor with Supervisor.
 5. API Annotations were written and published with Swagger.
 6. API Authorization and Authentication poweresd by Sanctum.
-7.
+7. Cloudinary for Image Uploads.
+8. Design Pattern: Service-Repositories using Eloquent (This can be switched to use DB Transactions)
+
