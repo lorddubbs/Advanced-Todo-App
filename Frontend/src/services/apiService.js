@@ -151,7 +151,7 @@ class UserApiService extends ModelApiService {
       const response = await axios.get(
         this.baseUrl + "/userProfile"
       );
-      this.setEssentials(response);
+      this.setEssentials(response.data);
       return response.data;
     } catch (error) {
       return;
