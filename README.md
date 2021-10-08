@@ -45,7 +45,7 @@ composer install
 
 ## Publish Packages
 ```
-php artisan vendor:publish | Select Sanctum
+php artisan vendor:publish | Publish Sanctum, Swagger, Cloudinary and Elasticsearch
 ```
 
 ## Run Docker
