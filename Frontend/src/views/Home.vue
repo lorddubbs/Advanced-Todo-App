@@ -5,7 +5,13 @@
     </div>
 
     <div class="page-main-area">
-      <user-table :users="users"></user-table>
+      <div class="assets-showcase-ad margin-t-60">
+        <div class="showcase">
+          <div class="showcase-item" v-for="user in users" :key="user.id">
+            <user-table :user="user" :key="user.id"></user-table>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>

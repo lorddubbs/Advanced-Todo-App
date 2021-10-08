@@ -3,7 +3,7 @@
     <div class="filter-box-container">
         <div class="filter-box-header">
             <h1 v-if="!header">All Tasks</h1>
-            <h1 v-else-if="header">All Tasks under {{type}}</h1>
+            <h1 v-else-if="header">{{type}}</h1>
         </div>
         <div class="filter-box-options" v-if="route === null">
             <div class="filter-menu-container">
@@ -25,6 +25,11 @@
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                 <ul class="filter-buttons">
+                                    <li>
+                                      <button @click="initiate()">
+                                            All
+                                      </button>
+                                    </li>
                                     <li v-for="category in categories" :key="category.id">
                                         <button @click="initiate(category.name, category.id)">
                                             {{category.name}}
@@ -57,24 +62,13 @@ export default {
     return {
       header: false,
       type: 'choose category',
-      route: this.$route.params.task || null,
-      categoryData: []
+      route: this.$route.params.task || null
     };
   },
-  computed: {
-    items() {
-      this.categoryData = this.categories;
-    }
-  },
-  watch: {
-    categories(categories) {
-      this.categoryData = categories;
-    }
-  },
    methods: {
-    initiate(name, id) {
+    initiate(name = null, id = null) {
       this.header = true;
-      this.type = name;
+      this.type = name || 'All Tasks';
       this.$emit('category', id);
     }
   }

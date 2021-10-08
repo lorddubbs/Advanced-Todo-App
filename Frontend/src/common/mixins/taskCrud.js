@@ -1,5 +1,7 @@
 
-    const taskCrud = store => ({
+    /*const taskCrud = store => ({
+    });*/
+    export default {
     methods: {
          async initiate() {
           try { 
@@ -8,8 +10,9 @@
                   'data': this.getPayload(),
                   'id': this.taskItems.id
               }
-              await this.$store.dispatch(store, payload);
+              await this.updateTask(payload);
               this.loader(false);
+              this.$toast.info("Task Updated");
               this.$router.push({
                   name: 'tasks'
               });
@@ -24,8 +27,8 @@
           payload.append('description', this.taskItems.description);
           payload.append('priority', this.taskItems.priority);
           payload.append('category_id', this.category_id);
-          payload.append('start_date', this.taskItems.start_date);
-          payload.append('end_date', this.taskItems.end_date);
+          payload.append('start_date', this.taskItems.start_date || '');
+          payload.append('end_date', this.taskItems.end_date || '');
           payload.append('thumbnail', this.thumbnail);
           payload.append('access', this.taskItems.access);
           return payload;
@@ -34,6 +37,4 @@
         this.loading = args;
       }
     }
-})
-
-export default taskCrud
+}

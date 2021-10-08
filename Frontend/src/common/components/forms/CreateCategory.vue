@@ -45,12 +45,9 @@ export default {
               let payload = {
                   name: this.name
               };
-              let response = await this.createCategory(payload);
+              await this.createCategory(payload);
               this.loader(false);
               this.$toast.info("Category Created");
-              /*this.$router.push({
-                  name: 'tasks'
-              });*/
               } catch (error) {
                   this.loader(false);
               }

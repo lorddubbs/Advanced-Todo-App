@@ -45,7 +45,6 @@ export default {
       },
       async updateUser({ commit }, payload) {
         let user = await this.$apiService.user.updateProfile(payload);
-        commit("UPDATE_USER", user.data);
       },
       async getAllUsers({ commit }) {
         let users = await this.$apiService.user.fetch();

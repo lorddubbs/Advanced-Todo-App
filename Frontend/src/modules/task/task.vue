@@ -7,7 +7,7 @@
       </div>
 
       <div class="form-group">
-        <div class="task-image">
+        <div class="task-image" v-if="items.thumbnail">
         <img :src="items.thumbnail" alt="Task Image" />
         </div>
       </div>
@@ -104,13 +104,16 @@ const Comment = () => import(/* webpackChunkName: "overlays" */ /* webpackPrefet
 import DatePicker from 'vue2-datepicker';
 
 import BreadCrumbs from "@/common/mixins/breadcrumb";
-import taskCrud from "@/common/mixins/taskCrud";
+import TaskCrud from "@/common/mixins/taskCrud";
+import FileUpload from "@/common/mixins/fileUpload";
+
 
 export default {
   name: "task",
   mixins: [
       BreadCrumbs,
-      taskCrud('task/updateTask')
+      FileUpload,
+      TaskCrud
   ],
   props: {
     categories: {
@@ -166,14 +169,11 @@ export default {
       this.items = itemState;
     }
   },
-  methods: {
-    getFile(e) {
-        this.thumbnail = e.target.files[0] || e.dataTransfer.files;
-          return this.thumbnail;
-      },
+  methods: { 
     ...mapActions({
       getTask: "task/getTask",
       getAllComments: "comment/getAllComments",
+      updateTask: "task/updateTask",
       deleteTask: "task/deleteTask"
     })
   }

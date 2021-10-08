@@ -1,7 +1,4 @@
 <template>
-<div class="assets-showcase-ad margin-t-60">
-          <div class="showcase">
-              <div class="showcase-item" v-for="user in users" :key="user.id">
                   <div class="item-entry cursor-style">
                   <div class="item-badge margin-b-10">
                     <div class="badge">
@@ -25,10 +22,7 @@
                           </li>
                       </ul>
                   </div>
-                  </div>
-              </div>
-          </div>
-      </div>
+                </div>
 </template>
 
 <script>
@@ -36,7 +30,7 @@
 export default {
   name: "UserTable",
   props: {
-    users: {
+    user: {
         type: Array,
         required: true
         /*validator: function(obj) {

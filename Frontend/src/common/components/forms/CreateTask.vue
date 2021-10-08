@@ -83,6 +83,8 @@
 
 import { mapActions } from "vuex";
 import DatePicker from 'vue2-datepicker';
+import FileUpload from "@/common/mixins/fileUpload";
+
 
 export default {
   name: "CreateTask",
@@ -94,6 +96,9 @@ export default {
         }*/
     }
   },
+  mixins: [
+    FileUpload
+  ],
   components: {
       DatePicker
   },
@@ -114,16 +119,13 @@ export default {
       ...mapActions({
           createTask: "task/createTask"
         }),
-      getFile(e) {
-          this.thumbnail = e.target.files[0] || e.dataTransfer.files;
-          return this.thumbnail;
-      },
       async initiate() {
           try {
               this.loader(true);
               let payload = this.getPayload();
-              let response = await this.createTask(payload);
+              await this.createTask(payload);
               this.loader(false);
+              this.$toast.info("Task Created");
               this.$router.push({
                 name: 'tasks'
               });

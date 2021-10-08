@@ -2,11 +2,13 @@ export default {
     namespaced: true,
     state: {
       task: [],
-      tasks: []
+      tasks: [],
+      taskCount: ''
     },
     getters: {
       task: state => state.task,
-      tasks: state => state.tasks
+      tasks: state => state.tasks,
+      taskCount: state => state.taskCount
     },
     mutations: {
       SET_TASK(state, task) {
@@ -17,6 +19,9 @@ export default {
       },
       GET_TASK(state, task) {
         state.task = task.data;
+      },
+      GET_TASK_COUNT(state, task) {
+        state.taskCount = task;
       },
       UPDATE_TASK(state, task) {
         var index = state.tasks.findIndex(function(item, i) {
@@ -59,6 +64,7 @@ export default {
       async getAllTasks({ commit }) {
         let tasks = await this.$apiService.task.fetch();
         commit("GET_TASKS", tasks);
+        commit("GET_TASK_COUNT", tasks.data.length);
       },
     }
   };

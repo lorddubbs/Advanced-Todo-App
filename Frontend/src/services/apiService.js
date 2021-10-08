@@ -73,9 +73,7 @@ class ModelApiService extends GetterApiService {
     if (!id) throw Error("No record id is provided");
     try {
       const response = await axios.post(this.getUrl(id), data);
-      const { id: responseId } = response.data;
-      return responseId;
-      //return response.data;
+      return response.data;
     } catch (error) {
       this.handleErrors(error);
     }
@@ -147,7 +145,7 @@ class UserApiService extends ModelApiService {
 
   async myProfile() {
     try {
-      await axios.get(this.defaultUrl() + "csrf-cookie");
+      //await axios.get(this.defaultUrl() + "csrf-cookie");
       const response = await axios.get(
         this.baseUrl + "/userProfile"
       );

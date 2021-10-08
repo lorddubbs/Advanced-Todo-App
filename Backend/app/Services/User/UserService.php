@@ -32,6 +32,7 @@ class UserService
         if(!empty($data['thumbnail'])) {
         $data['thumbnail'] = $this->uploadToCloud($data['thumbnail']);
         }
+        $data = array_filter($data);
         $this->userRepository->update($userId, $data);
 
         return $this->userRepository->find($userId);

@@ -2,11 +2,13 @@ export default {
     namespaced: true,
     state: {
       category: [],
-      categories: []
+      categories: [],
+      categoryCount: ''
     },
     getters: {
       category: state => state.category,
-      categories: state => state.categories
+      categories: state => state.categories,
+      categoryCount: state => state.categoryCount 
     },
     mutations: {
       SET_CATEGORY(state, category) {
@@ -17,6 +19,9 @@ export default {
       },
       GET_CATEGORY(state, category) {
         state.category = category;
+      },
+      GET_CATEGORY_COUNT(state, category) {
+        state.categoryCount = category;
       },
       DELETE_CATEGORY(state, category){
         var index = state.categories.findIndex(function(item, i) {
@@ -39,6 +44,7 @@ export default {
       async getAllCategories({ commit }) {
         let categories = await this.$apiService.category.fetch();
         commit("GET_CATEGORIES", categories);
+        commit("GET_CATEGORY_COUNT", categories.data.length);
       },
 
       async deleteCategory({ commit }, payload) {

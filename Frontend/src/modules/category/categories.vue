@@ -1,27 +1,35 @@
 <template>
     <div class="page-main-area default-block-entry left-alignment margin-t-60">
-      <category-table :categories="categoriesData"></category-table>
+      <div class="container">
+    <div class="container-table"> 
+        <table class="custom-table">
+            <thead>
+               <tr>
+                   <th>Name</th>
+                   <th>Number of Tasks</th>
+                   <th>Date Added</th> 
+                   <th>Action</th>
+               </tr>
+            </thead>
+      <category-table :categories="categories"></category-table>
+      </table>
+    </div>
+  </div>
     </div>
 </template>
 
 <script>
+
+import { mapGetters, mapActions } from "vuex";
 
 const CategoryTable = () => import(/* webpackChunkName: "tables" */ /* webpackPrefetch: true */ "@/common/components/tables/CategoryTable.vue");
 import BreadCrumbs from "@/common/mixins/breadcrumb";
 
 export default {
   name: "categories",
-  mixins: [
+  mixins: [ 
     BreadCrumbs
   ],
-  props: {
-    categories: {
-        type: Array,
-        required: true
-        /*validator: function(obj) {
-        }*/
-    }
-  },
   components: {
     CategoryTable
   },
@@ -36,21 +44,17 @@ export default {
         to:   'categories'
       }
     ]);
+    this.getCategories();
   },
-  data() {
-    return {
-      categoriesData: [],
-    }
+   computed: {
+    ...mapGetters({
+      categories: "category/categories"
+    })
   },
-  computed: {
-    items() {
-      this.categoriesData = this.categories;
-    }
-  },
-  watch: {
-    categories(categories) {
-      this.categoriesData = categories;
-    }
+  methods: {
+    ...mapActions({
+      getCategories: "category/getAllCategories"
+    }),
   }
 };
 </script>

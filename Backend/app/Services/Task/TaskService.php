@@ -25,10 +25,7 @@ class TaskService
 
     public function createTask(array $task)
     {
-        if(!empty($task['thumbnail'])) {
         $task['thumbnail'] = $this->uploadToCloud($task['thumbnail']);
-        }
-
         $task['slug'] = Str::slug($task['title']);
         $task['user_id'] = Auth::id();
         
@@ -43,13 +40,15 @@ class TaskService
     public function updateTask(int $taskId, array $data)
     {
         $task = $this->taskRepository->find($taskId);
+
         if(!empty($data['category_id'])) {
-        $task->categories()->sync($data['category_id']);
+            $task->categories()->sync($data['category_id']);
         }
-        
-        if($task['thumbnail']) {
-            $task['thumbnail'] = $this->uploadToCloud($task['thumbnail']);
-        }
+
+        $data['thumbnail'] = $this->uploadToCloud($data['thumbnail']);
+        $data['slug'] = Str::slug($data['title']);
+
+        $data = array_filter($data);
         return $this->taskRepository->update($taskId, $data);
     }
 
@@ -87,8 +86,11 @@ class TaskService
     }
 
     protected function uploadToCloud($image) {
+        if (!empty($image)) {
         $upload = $image->storeOnCloudinary('Files');
         return $upload->getSecurePath();
+        }
+        return NULL;
     }
 
     private function sendTaskCreationNotification(Task $task)

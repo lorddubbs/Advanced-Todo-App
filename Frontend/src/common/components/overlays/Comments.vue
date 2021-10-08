@@ -6,12 +6,12 @@
         <div class="comment-section">
           <div class="multi-step-comment">
         <div class="container">
-          <div class="form-group" v-for="comment in comments" :key="comment.id">
+          <div class="form-group" v-for="comment in comments" :key="comment.id" @mouseover="hover = true" @mouseleave="hover = false">
             <p class="commented">
               {{ comment.comment }}
             </p>
-            <div class="edit-button" @mouseover="hover = true" @mouseleave="hover = false">
-              <ul>
+            <div class="edit-button">
+              <ul v-show="hover">
                 <li>
                   <span @click="deleteComment(comment.id)" class="cursor-style"><i class="fas fa-trash"></i></span>
                 </li>
@@ -31,7 +31,7 @@ import { mapActions } from "vuex";
 const CreateComment = () => import(/* webpackChunkName: "forms" */ /* webpackPrefetch: true */ "@/common/components/forms/CreateComment.vue");
 
 export default {
-  name: "comments",
+  name: "Comments",
   props: {
      task: {
       type: Number,

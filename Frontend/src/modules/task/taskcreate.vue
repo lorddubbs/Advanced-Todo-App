@@ -1,26 +1,19 @@
  <template>
     <div class="page-main-area default-block-entry left-alignment margin-t-30">
         <div class="multi-step-form-container">
-            <create-task :categories="categoriesData"></create-task>
+            <create-task :categories="categories"></create-task>
         </div>
     </div>
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
 
 const CreateTask = () => import(/* webpackChunkName: "forms" */ /* webpackPrefetch: true */ "@/common/components/forms/CreateTask.vue");
 import BreadCrumbs from "@/common/mixins/breadcrumb";
 
 export default {
   name: "taskcreate",
-  props: {
-    categories: {
-        type: Array,
-        required: true
-        /*validator: function(obj) {
-        }*/
-    }
-  },
   mixins: [
       BreadCrumbs
   ],
@@ -42,21 +35,17 @@ export default {
         to:   'createTask'
       }
     ]);
-  },
-  data() {
-    return {
-      categoriesData: [],
-    }
+    this.getCategories();
   },
   computed: {
-    items() {
-      this.categoriesData = this.categories;
-    }
+    ...mapGetters({
+      categories: "category/categories"
+    })
   },
-  watch: {
-    categories(categories) {
-      this.categoriesData = categories;
-    }
+  methods: {
+    ...mapActions({
+      getCategories: "category/getAllCategories"
+    }),
   }
 };
 </script>

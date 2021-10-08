@@ -74,7 +74,7 @@
                 My Tasks
               </span>
               <span>
-                {{ taskCount }}
+                {{ tasks || '' }}
               </span>
             </li>
             <li>
@@ -82,7 +82,7 @@
                 Task Categories
               </span>
               <span>
-                {{ categoryCount }}
+                {{ categories || '' }}
               </span>
             </li>
           </ul>
@@ -97,17 +97,15 @@
 import { mapGetters } from "vuex";
 export default {
   name: "Dashboard",
+  created() {
+    this.$store.dispatch("task/getAllTasks");
+    this.$store.dispatch("category/getAllCategories");
+  },
   computed: {
     ...mapGetters({
-      tasks: "task/tasks",
-      categories: "category/categories"
-    }),
-    taskCount() {
-      return this.tasks.length;
-    },
-    categoryCount() {
-      return this.categories.length;
-    }
+      tasks: "task/taskCount",
+      categories: "category/categoryCount"
+    })
   }
 };
 </script>

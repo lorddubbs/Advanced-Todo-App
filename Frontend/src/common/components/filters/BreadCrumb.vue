@@ -102,6 +102,11 @@ export default {
           return localStorage.getItem("UserThumbnail");
       }
   },
+  watch: {
+    loggedUser(user) {
+      this.userData = user;
+    }
+  },
   methods: {
       async initiate() {
       try {

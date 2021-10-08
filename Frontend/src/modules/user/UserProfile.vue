@@ -32,7 +32,7 @@
 
                   <div class="form-group">
                     <label for="email_address" class="default-block-entry">Email Address</label>
-                    <p>{{userData.email ? userData.email : 'Email Address'}}</p>
+                    <p v-once>{{userData.email ? userData.email : 'Email Address'}}</p>
                   </div>
                   
                   <div class="form-group">
@@ -95,8 +95,8 @@ export default {
    }
   },
   watch: {
-    loggedUser(loggedUser) {
-      this.userData = loggedUser;
+    loggedUser(user) {
+      this.userData = user;
     }
   },
   methods: {

@@ -1,15 +1,5 @@
 <template>
-  <div class="container">
-    <div class="container-table"> 
-        <table class="custom-table">
-            <thead>
-               <tr>
-                   <th>Name</th>
-                   <th>Number of Tasks</th>
-                   <th>Date Added</th> 
-                   <th>Action</th>
-               </tr>
-            </thead>
+  
             <tbody>
                <tr v-for="category in categories" :key="category.id">
                    <td>
@@ -44,9 +34,7 @@
                  </td>
                </tr>
             </tbody>
-        </table>
-    </div>
-  </div>
+        
 </template>
 
 <script>

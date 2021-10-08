@@ -11,13 +11,11 @@
     <div class="search-area">
       <search-form></search-form>
     </div>
-    <router-view :tasks="tasks" :categories="categories"></router-view>
+    <router-view :key="$route.fullPath"></router-view>
   </div>
 </template>
 
 <script>
-
-import { mapGetters, mapActions } from "vuex";
 
 const BreadCrumb = () => import(/* webpackChunkName: "filters" */ /* webpackPrefetch: true */ "@/common/components/filters/BreadCrumb.vue");
 const Notifications = () => import(/* webpackChunkName: "overlays" */ /* webpackPrefetch: true */ "@/common/components/overlays/Notifications.vue");
@@ -47,20 +45,6 @@ export default {
         to:   'tasks'
       }
     ]);
-    this.getTasks();
-    this.getCategories();
-  },
-  computed: {
-    ...mapGetters({
-      tasks: "task/tasks",
-      categories: "category/categories"
-    })
-  },
-  methods: {
-    ...mapActions({
-      getTasks: "task/getAllTasks",
-      getCategories: "category/getAllCategories"
-    })
   }
 };
 </script>
