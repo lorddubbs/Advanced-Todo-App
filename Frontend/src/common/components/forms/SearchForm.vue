@@ -34,9 +34,12 @@ export default {
           this.status = true;
           try {
              let response = await this.$axios.get(
-                  "/reset-password-request", {
-                      query: this.query
+                  "/search", {
+                      params: {
+                          query: this.query
+                      }
                   }
+                  
               );
               } catch (error) {
                  return;

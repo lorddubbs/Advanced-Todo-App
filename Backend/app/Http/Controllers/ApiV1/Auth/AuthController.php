@@ -137,10 +137,10 @@ class AuthController extends Controller
      *     @OA\Response(response="403", description="Unauthorized. User not with access role")
      * )
      */
-    public function resendVerificationEmail()
+    public function resendVerificationEmail(Request $request)
     {
         try {
-            $user = Auth::user();
+            $user = $request->user();
             if ($user->hasVerifiedEmail()) { 
                 return formatResponse(422, 'User already verified.', false, [
                     'error' => 'User already verified.'
@@ -150,7 +150,7 @@ class AuthController extends Controller
             return formatResponse(200, 'Verification link sent', true);
             
         } catch (\Exception $e) {
-            Log::error('Failed to resend verification email. Error:', $e->getMessage());
+            //Log::error('Failed to resend verification email. Error:', $e->getMessage());
             return formatResponse(fetchErrorCode($e), get_class($e).': '.$e->getMessage());
         }
     } 

@@ -25,12 +25,15 @@
 
 <script>
 
-import { mapGetters, mapActions } from "vuex";
 const CategoryFilter = () => import(/* webpackChunkName: "filters" */ /* webpackPrefetch: true */ "@/common/components/filters/CategoryFilter.vue");
 const TaskTable = () => import(/* webpackChunkName: "tables" */ /* webpackPrefetch: true */ "@/common/components/tables/TaskTable.vue");
+import TasksCategories from "@/common/mixins/tasksCategories";
 
 export default {
   name: "tasks",
+  mixins: [
+    TasksCategories
+  ],
   components: {
       TaskTable,
       CategoryFilter
@@ -44,12 +47,6 @@ export default {
       tasksData: [],
       categoriesData: []
     }
-  },
-  computed: {
-    ...mapGetters({
-      tasks: "task/tasks",
-      categories: "category/categories"
-    })
   },
   watch: {
     tasks : {
@@ -66,10 +63,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions({
-      getTasks: "task/getAllTasks",
-      getCategories: "category/getAllCategories"
-    }),
     processCategory(category) {
       if(category) {
       this.tasksData = this.tasks.filter(({categories}) => (categories.some(({ id }) => id == category)));

@@ -18,7 +18,7 @@ class SearchController extends Controller
     public function search(Request $request)
     {
         try {
-            $search = $this->searchService->searchQuery($request->query);
+            $search = $this->searchService->searchQuery($request->input('query'));
             return formatResponse(200, 'Search successful.', true, $search);
         } catch (\Exception $e) {
             //Log::error('Tasks retrieval failed. Error: ', $e->getMessage());

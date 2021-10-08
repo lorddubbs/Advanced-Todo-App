@@ -48,6 +48,7 @@ export default {
               await this.createCategory(payload);
               this.loader(false);
               this.$toast.info("Category Created");
+              this.$router.push({name: 'categories'})
               } catch (error) {
                   this.loader(false);
               }

@@ -33,12 +33,12 @@ Route::prefix('v1')->group(function () {
     Route::post('login', 'Auth\AuthController@login');
     Route::post('reset-password-request', 'Auth\ForgotPasswordController@resetPasswordRequest');
     Route::post('update-password', 'Auth\ResetPasswordController@updatePassword');
-    Route::post('email/verification/resend', 'Auth\AuthController@resendVerificationEmail')->name('verify.user');
     
     Route::group(['middleware' => 'auth:sanctum'], function() {
         Route::get('/userProfile', function (Request $request) {
             return $request->user();
         });
+        Route::post('email/verification/resend', 'Auth\AuthController@resendVerificationEmail')->name('verify.user');
         Route::post('updateProfile', 'UserController@update');
         Route::post('logout', 'Auth\AuthController@logout');
     

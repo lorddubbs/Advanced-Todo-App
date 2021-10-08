@@ -20,15 +20,15 @@
 
 <script>
 
-import { mapGetters, mapActions } from "vuex";
-
 const CategoryTable = () => import(/* webpackChunkName: "tables" */ /* webpackPrefetch: true */ "@/common/components/tables/CategoryTable.vue");
 import BreadCrumbs from "@/common/mixins/breadcrumb";
+import TasksCategories from "@/common/mixins/tasksCategories";
 
 export default {
   name: "categories",
   mixins: [ 
-    BreadCrumbs
+    BreadCrumbs,
+    TasksCategories
   ],
   components: {
     CategoryTable
@@ -45,16 +45,7 @@ export default {
       }
     ]);
     this.getCategories();
-  },
-   computed: {
-    ...mapGetters({
-      categories: "category/categories"
-    })
-  },
-  methods: {
-    ...mapActions({
-      getCategories: "category/getAllCategories"
-    }),
+    this.getTasks();
   }
 };
 </script>

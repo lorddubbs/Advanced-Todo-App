@@ -76,7 +76,7 @@ const routes = [
     meta: {
       layout: "UserLayout",
       title: "TODO | Verify Email",
-      middleware: [auth,isVerified]
+      middleware: [isVerified]
     }
   },
   {
