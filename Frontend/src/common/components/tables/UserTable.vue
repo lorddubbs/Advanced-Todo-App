@@ -36,11 +36,6 @@ export default {
         /*validator: function(obj) {
         }*/
     }
-  },
-  computed: {
-    completedTasks() {
-
-    }
   }
 };
 </script>

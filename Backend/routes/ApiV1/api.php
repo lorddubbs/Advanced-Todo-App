@@ -34,7 +34,6 @@ Route::prefix('v1')->group(function () {
     Route::post('reset-password-request', 'Auth\ForgotPasswordController@resetPasswordRequest');
     Route::post('update-password', 'Auth\ResetPasswordController@updatePassword');
     Route::post('email/verification/resend', 'Auth\AuthController@resendVerificationEmail')->name('verify.user');
-        
     
     Route::group(['middleware' => 'auth:sanctum'], function() {
         Route::get('/userProfile', function (Request $request) {
@@ -42,6 +41,7 @@ Route::prefix('v1')->group(function () {
         });
         Route::post('updateProfile', 'UserController@update');
         Route::post('logout', 'Auth\AuthController@logout');
+    
     });
 
     // all users

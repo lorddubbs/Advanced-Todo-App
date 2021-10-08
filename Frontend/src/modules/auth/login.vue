@@ -86,7 +86,7 @@ export default {
         this.loader(true);
         await this.loginUser(this.user);
         this.loader(false);
-        this.$toast.push({name: "Home"});
+        this.$router.push({name: "Home"});
         } catch (error) {
           this.loader(false);
       }

@@ -92,7 +92,7 @@ export default {
           this.loader(true);
           await this.registerUser(this.user);
           this.loader(false);
-          this.$router.push({name: "Home"});
+          this.$router.push({name: "verifyEmail"});
         } catch (error) {
           this.loader(false);
         }

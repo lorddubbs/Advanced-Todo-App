@@ -34,6 +34,7 @@ export default {
         let user = await this.$apiService.auth.loginUser(payload);
         cookie.setCookie('token', user.data.token)
         commit("SET_USER", user.data);
+        return user;
       },
       async verifyUser({ commit }) {
         let user = await this.$apiService.auth.verifyUser();
