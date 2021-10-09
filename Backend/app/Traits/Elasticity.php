@@ -9,7 +9,7 @@ trait Elasticity
     public static function bootSearchable()
     {
         if (config('services.search.enabled')) {
-            static::observe(ElasticsearchObserver::class);
+            static::observe(ElasticityObserver::class);
         }
     }
 
@@ -18,9 +18,9 @@ trait Elasticity
         return $this->getTable();
     }
 
-    public function elasticsearchIndex(Client $elasticsearchClient)
+    public function elasticsearchIndex(Client $elasticSearchClient)
     {
-        $elasticsearchClient->index([
+        $elasticSearchClient->index([
             'index' => $this->getTable(),
             'type' => '_doc',
             'id' => $this->getKey(),
@@ -28,14 +28,12 @@ trait Elasticity
         ]);
     }
 
-    public function elasticsearchDelete(Client $elasticsearchClient)
+    public function elasticsearchDelete(Client $elasticSearchClient)
     {
-        $elasticsearchClient->delete([
+        $elasticSearchClient->delete([
             'index' => $this->getTable(),
             'type' => '_doc',
             'id' => $this->getKey(),
         ]);
     }
-
-    abstract public function toElasticsearchDocumentArray(): array;
 }

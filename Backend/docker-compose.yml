@@ -159,9 +159,16 @@ services:
         container_name: std-elasticsearch
         environment:
             - discovery.type=single-node
+            - cluster.name=std-elasticsearch
+            - bootstrap.memory_lock=true
+            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
         ports:
             - 9200:9200
             - 9300:9300
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1 
         volumes:
             - './.docker/elasticsearch/data:/usr/share/elasticsearch/data'
         networks:

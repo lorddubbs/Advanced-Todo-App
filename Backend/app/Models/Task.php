@@ -39,9 +39,4 @@ class Task extends Model
         return $this->hasMany('App\Models\Comment');
     }
 
-    public function toElasticsearchDocumentArray(): array {
-        return $this->toArray();
-    }
-
-
 }

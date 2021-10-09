@@ -6,18 +6,18 @@ use Elasticsearch\Client;
 class ElasticityObserver
 {
    
-    public function __construct(private Client $elasticsearchClient)
+    public function __construct(private Client $elasticSearchClient)
     {
-        $this->elasticsearchClient = $elasticsearchClient;
+        $this->elasticSearchClient = $elasticSearchClient;
     }
 
     public function saved($model)
     {
-        $model->elasticSearchIndex($this->elasticsearchClient);
+        $model->elasticSearchIndex($this->elasticSearchClient);
     }
 
     public function deleted($model)
     {
-        $model->elasticSearchDelete($this->elasticsearchClient);
+        $model->elasticSearchDelete($this->elasticSearchClient);
     }
 }
