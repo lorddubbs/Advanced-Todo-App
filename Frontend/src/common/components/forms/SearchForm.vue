@@ -2,7 +2,7 @@
   <div class="container">
     
       <div class="form-group default-flex-entry">
-          <input type="text" placeholder="Search tasks" v-model="query" @input="initiate($event)" />
+          <input type="text" placeholder="Search tasks" v-model="query" @keyup="initiate($event)" />
       </div>
       
       <div class="search-results" v-if="status">
@@ -26,24 +26,28 @@ export default {
   data() {
     return {
         query: '',
+        keyTimer: undefined,
+        timeoutValue: 1000,
         status: false
     };
   },
   methods: {
-      async initiate(text) {
-          this.status = true;
-          try {
-             let response = await this.$axios.get(
-                  "/search", {
+       initiate(e) {
+          clearTimeout(this.keyTimer);
+          this.keyTimer = setTimeout(() => {
+              this.status = true;
+              try {
+                  let response = this.$axios.get(
+                      "/search", {
                       params: {
                           query: this.query
                       }
                   }
-                  
               );
               } catch (error) {
                  return;
               }
+            }, this.timeoutValue);
       },
   }
 

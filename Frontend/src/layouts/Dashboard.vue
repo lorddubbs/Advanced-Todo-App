@@ -74,7 +74,7 @@
                 My Tasks
               </span>
               <span>
-                {{ tasks = 0 ? '0' : tasks }}
+                {{ taskCount = 0 ? '0' : taskCount }}
               </span>
             </li>
             <li>
@@ -82,7 +82,7 @@
                 Task Categories
               </span>
               <span>
-                {{ categories = 0 ? '0' : categories }}
+                {{ categoryCount = 0 ? '0' : categoryCount }}
               </span>
             </li>
           </ul>
@@ -97,11 +97,25 @@
 import { mapGetters } from "vuex";
 export default {
   name: "Dashboard",
+  data() {
+    return {
+    taskCount: null,
+    categoryCount: null
+    }
+  },
   computed: {
     ...mapGetters({
       tasks: "task/taskCount",
       categories: "category/categoryCount"
     })
+  },
+  watch: {
+    tasks(tasks){
+      this.taskCount = tasks
+    },
+    categories(categories){
+      this.categoryCount = categories
+    },
   }
 };
 </script>
