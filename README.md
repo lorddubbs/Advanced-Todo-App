@@ -45,18 +45,18 @@ composer install
 
 ## Publish Packages
 ```
-php artisan vendor:publish | Publish Sanctum, Swagger, Cloudinary and Elasticsearch
+php artisan vendor:publish | Publish Sanctum, Swagger, Cloudinary Packages 
 ```
 
 ## Run Docker
-Set up .env with corresponding Docker credentials. App should run on localhost.
+Configure .env with corresponding Docker credentials. App should run on localhost.
 ```
 docker compose up
 ```
 
 ## Clear Cache
 ```
-php artisan config:clear
+docker exec -it std-app php artisan config:clear
 ```
 
 ## Run Migrations and Seeders from Docker Container
@@ -64,14 +64,19 @@ php artisan config:clear
 docker exec -it std-app php artisan migrate --seed
 ```
 
-## Run Unit Tests
+## Index Tasks table for Elastic Search
 ```
-docker exec -it std-app php artisan test
+docker exec -it std-app php artisan load:task
 ```
 
 ## Generate API DOCS
 ```
 docker exec -it std-app php artisan l5-swagger:generate
+```
+
+## Run Unit Tests
+```
+docker exec -it std-app php artisan test
 ```
 
 ### API DOCS
@@ -85,7 +90,8 @@ http://localhost/todo/docs
 3. Users get reminded about their todos through scheduled messages, 1 hour before start time.
 4. Create a configuration file for the Scheduler and monitor with Supervisor.
 5. API Annotations were written and published with Swagger.
-6. API Authorization and Authentication poweresd by Sanctum.
+6. API Authorization and Authentication powered by Sanctum.
 7. Cloudinary for Image Uploads.
-8. Design Pattern: Service-Repositories using Eloquent (This can be switched to use DB Transactions)
+8. Design Pattern: Service-Repositories using Eloquent (This can be switched to use DB Transactions).
+9. This app does not cover Paginations, Empty States and Bash Aliases.
 
