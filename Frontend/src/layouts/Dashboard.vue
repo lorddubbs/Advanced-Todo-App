@@ -74,7 +74,7 @@
                 My Tasks
               </span>
               <span>
-                {{ taskCount = 0 ? '0' : taskCount }}
+                {{ taskCount || taskPlaceholder }}
               </span>
             </li>
             <li>
@@ -82,7 +82,7 @@
                 Task Categories
               </span>
               <span>
-                {{ categoryCount = 0 ? '0' : categoryCount }}
+                {{ categoryCount || categoryPlaceholder }}
               </span>
             </li>
           </ul>
@@ -100,7 +100,9 @@ export default {
   data() {
     return {
     taskCount: null,
-    categoryCount: null
+    categoryCount: null,
+    taskPlaceholder: localStorage.getItem('taskCount'),
+    categoryPlaceholder: localStorage.getItem('categoryCount')
     }
   },
   computed: {
@@ -110,12 +112,18 @@ export default {
     })
   },
   watch: {
-    tasks(tasks){
+    tasks: {
+      immediate:true,
+      handler(tasks){
       this.taskCount = tasks
+      }
     },
-    categories(categories){
+    categories: {
+      immediate:true,
+      handler(categories){
       this.categoryCount = categories
-    },
+      }
+    }
   }
 };
 </script>

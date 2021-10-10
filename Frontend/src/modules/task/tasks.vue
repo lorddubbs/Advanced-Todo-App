@@ -15,7 +15,7 @@
                    <th>Action</th>
                </tr>
             </thead>
-      <task-table :tasks="tasksData"></task-table>
+      <task-table :tasks="tasksData" :categories="categoriesData"></task-table>
       </table>
     </div>
   </div>
@@ -46,20 +46,6 @@ export default {
     return {
       tasksData: [],
       categoriesData: []
-    }
-  },
-  watch: {
-    tasks : {
-      immediate:true,
-      handler(tasks) {
-        this.tasksData = tasks;
-      }
-    },
-    categories : {
-      immediate:true,
-      handler(categories) {
-        this.categoriesData = categories
-      }
     }
   },
   methods: {

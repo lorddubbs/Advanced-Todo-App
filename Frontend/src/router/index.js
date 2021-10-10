@@ -111,7 +111,7 @@ const routes = [
         meta: { layout: "MainDashboardLayout", title: "TODO | Dashboard Create Task", middleware: [auth] }
       },
       {
-        path: 'tasks/:id/:task',
+        path: 'tasks/:id/:slug',
         name: 'viewTask',
         props: true,
         component: Task,

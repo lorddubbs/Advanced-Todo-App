@@ -15,11 +15,14 @@ class SearchController extends Controller
         $this->searchService = $searchService;
     }
 
-    public function search(Request $request)
+    public function search()
     {
         try {
-            $search = $this->searchService->searchQuery($request->input('query'));
+            if(!is_null(request('query'))) {
+            $search = $this->searchService->searchQuery(request('query'));
             return formatResponse(200, 'Search successful.', true, $search);
+            }
+            return formatResponse(200, 'Empty Query.', true);
         } catch (\Exception $e) {
             //Log::error('Tasks retrieval failed. Error: ', $e->getMessage());
             return formatResponse(500, 'Search failed.', false, $e->getMessage());

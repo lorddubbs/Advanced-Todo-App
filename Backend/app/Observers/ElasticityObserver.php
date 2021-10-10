@@ -13,11 +13,20 @@ class ElasticityObserver
 
     public function saved($model)
     {
-        $model->elasticSearchIndex($this->elasticSearchClient);
+        $this->elasticSearchClient->index([
+            'index' => $model->getSearchIndex(),
+            'type' => $model->getSearchType(),
+            'id' => $model->getKey(),
+            'body' => $model->toSearchArray(),
+        ]);
     }
 
     public function deleted($model)
     {
-        $model->elasticSearchDelete($this->elasticSearchClient);
+        $this->elasticSearchClient->delete([
+            'index' => $model->getSearchIndex(),
+            'type' => $model->getSearchType(),
+            'id' => $model->getKey(),
+        ]);
     }
 }

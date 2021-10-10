@@ -3,8 +3,8 @@
 namespace App\Repositories\Search;
 
 use App\Repositories\SearchRepository;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use App\Models\Task;
+use Illuminate\Support\Facades\Auth;
 use Elasticsearch\Client;
 use Illuminate\Support\Arr;
 use Illuminate\Database\Eloquent\Collection;
@@ -28,7 +28,7 @@ use Illuminate\Database\Eloquent\Collection;
         return $this->buildCollection($items);
     }
 
-     private function searchOnElasticsearch(string $query = ''): array
+    private function searchOnElasticsearch(string $query = ''): array
     {
         $model = new Task;
 
@@ -37,24 +37,28 @@ use Illuminate\Database\Eloquent\Collection;
             'type' => $model->getSearchType(),
             'body' => [
                 'query' => [
-                    'multi_match' => [
-                        'fields' => ['title', 'description'],
-                        'query' => $query,
-                    ],
-                ],
+                    'bool' => [
+                        'must' => [
+                            'multi_match' => [
+                                'type' => "phrase_prefix",
+                                'fields' => ['title', 'description', 'priority'],
+                                'query' => $query,
+                            ]
+                        ]
+                    ]
+                ]
             ],
         ]);
-
         return $items;
     }
 
     private function buildCollection(array $items): Collection
     {
         $ids = Arr::pluck($items['hits']['hits'], '_id');
-
-        return Task::findMany($ids)
+        $tasks = Task::where('user_id', Auth::id())->get();
+        return $tasks->whereIn('id', $ids)
             ->sortBy(function ($task) use ($ids) {
                 return array_search($task->getKey(), $ids);
-            });
+        });
     }
  } 

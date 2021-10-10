@@ -24,14 +24,9 @@ export default {
         state.taskCount = task;
       },
       UPDATE_TASK(state, task) {
-        var index = state.tasks.findIndex(function(item, i) {
-          return item.id === task.id;
-        });
-        state.tasks = [
-           ...state.tasks.slice(0, index),
-           payload,
-           ...state.tasks.slice(index + 1)
-         ]
+        const index = state.tasks.findIndex(({ id }) => id === task.id);
+        if(!~index)
+        state.tasks.splice(index, 1, task);
       },
       DELETE_TASK(state, task){
         var index = state.tasks.findIndex(function(item, i) {
@@ -47,8 +42,13 @@ export default {
       },
       
       async updateTask({ commit }, payload) {
-        let task = await this.$apiService.task.put(payload.id, payload.data);
-        commit("UPDATE_TASK", task.data);
+        try {
+          let task = await this.$apiService.task.put(payload.id, payload.data);
+          commit("UPDATE_TASK", task.data);
+          return task;
+        } catch (error) {
+          throw 'Cannot update task'
+        }
       },
 
       async deleteTask({ commit }, payload) {
@@ -57,8 +57,8 @@ export default {
       },
 
       async getTask({ commit }, payload) {
-        let task = await this.$apiService.task.get(payload);
-        commit("GET_TASK", task);
+          let task = await this.$apiService.task.get(payload);
+          commit("GET_TASK", task);
       },
       
       async getAllTasks({ commit }) {

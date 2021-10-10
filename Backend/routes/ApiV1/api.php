@@ -27,9 +27,6 @@ Route::prefix('v1')->group(function () {
     Route::post('register', 'Auth\AuthController@register');
     Route::get('email/verification/{userId}', 'Auth\AuthController@verifyUser');
 
-    Route::get('search', 'SearchController@search');
-
-
     Route::post('login', 'Auth\AuthController@login');
     Route::post('reset-password-request', 'Auth\ForgotPasswordController@resetPasswordRequest');
     Route::post('update-password', 'Auth\ResetPasswordController@updatePassword');
@@ -41,7 +38,8 @@ Route::prefix('v1')->group(function () {
         Route::post('email/verification/resend', 'Auth\AuthController@resendVerificationEmail')->name('verify.user');
         Route::post('updateProfile', 'UserController@update');
         Route::post('logout', 'Auth\AuthController@logout');
-    
+        Route::get('search', 'SearchController@search');
+
     });
 
     // all users

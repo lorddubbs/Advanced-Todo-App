@@ -6,8 +6,8 @@
       </div>
       
       <div class="search-results" v-if="status">
-          <div class="results" @click="status = false">
-          <search-results></search-results>
+          <div class="results" ><!--@click="status = false"-->
+          <search-results :searchResults="queryResults" @minimize="status = $event"></search-results>
           </div>
       </div>
   </div>
@@ -26,28 +26,32 @@ export default {
   data() {
     return {
         query: '',
+        queryResults: [],
         keyTimer: undefined,
         timeoutValue: 1000,
         status: false
     };
   },
   methods: {
-       initiate(e) {
+       async initiate(e) {
           clearTimeout(this.keyTimer);
           this.keyTimer = setTimeout(() => {
               this.status = true;
-              try {
-                  let response = this.$axios.get(
+                   this.$axios.get(
                       "/search", {
                       params: {
                           query: this.query
                       }
                   }
-              );
-              } catch (error) {
-                 return;
-              }
-            }, this.timeoutValue);
+              ).then(response => {
+                  this.queryResults = response.data.data;
+              }).catch((error) => {
+                  let errors = error.response.data.errors || error.response.data.data.errors;
+                  for (let field of Object.keys(errors)) {
+                    this.$toast.error(errors[field][0], "error");
+                }
+            });
+              }, this.timeoutValue);
       },
   }
 

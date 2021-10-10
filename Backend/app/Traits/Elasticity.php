@@ -1,8 +1,7 @@
 <?php
 
 namespace App\Traits;
-
-use Elasticsearch\Client;
+use Illuminate\Support\Facades\Log;
 
 trait Elasticity
 {
@@ -15,25 +14,20 @@ trait Elasticity
 
     public function getSearchIndex()
     {
+        Log::info($this->getTable());
         return $this->getTable();
     }
 
-    public function elasticsearchIndex(Client $elasticSearchClient)
+    public function getSearchType()
     {
-        $elasticSearchClient->index([
-            'index' => $this->getTable(),
-            'type' => '_doc',
-            'id' => $this->getKey(),
-            'description' => $this->toElasticsearchDocumentArray(),
-        ]);
+        if (property_exists($this, 'useSearchType')) {
+            return $this->useSearchType;
+        }
+        return $this->getTable();
     }
 
-    public function elasticsearchDelete(Client $elasticSearchClient)
+    public function toSearchArray()
     {
-        $elasticSearchClient->delete([
-            'index' => $this->getTable(),
-            'type' => '_doc',
-            'id' => $this->getKey(),
-        ]);
+        return $this->toArray();
     }
 }

@@ -7,7 +7,6 @@ use CloudinaryLabs\CloudinaryLaravel\MediaAlly;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\Elasticity;
 
-
 class Task extends Model
 {
     use HasFactory, MediaAlly, Elasticity;

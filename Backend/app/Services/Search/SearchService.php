@@ -2,14 +2,14 @@
 
 namespace App\Services\Search;
 
-use App\Repositories\Search\ElasticSearchRepository;
+use App\Repositories\SearchRepository;
 
 
 class SearchService
 {
     protected $searchRepository;  
 
-    public function __construct(ElasticSearchRepository $searchRepository)
+    public function __construct(SearchRepository $searchRepository)
     {
         $this->searchRepository = $searchRepository;
     }

@@ -31,7 +31,7 @@ export default {
   name: "UserTable",
   props: {
     user: {
-        type: Array,
+        type: Object,
         required: true
         /*validator: function(obj) {
         }*/

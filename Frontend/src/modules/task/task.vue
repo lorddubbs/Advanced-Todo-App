@@ -3,61 +3,72 @@
 <div class="multi-step-form-container">
   <div class="container">
       <div class="form-group">
-          <h1>Update {{ page }}</h1>
+          <h1>Update {{ slug }}</h1>
       </div>
 
       <div class="form-group">
-        <div class="task-image" v-if="items.thumbnail">
-        <img :src="items.thumbnail" alt="Task Image" />
+        <div class="task-image" v-if="taskItems.thumbnail">
+        <img :src="taskItems.thumbnail" alt="Task Image" />
         </div>
       </div>
 
       <div class="form-group margin-t-40 default-flex-entry">
-          <input type="text" placeholder="Title" v-model="items.title" /> 
+          <input type="text" placeholder="Title" v-model="taskItems.title" /> 
       </div>
+
        <div class="form-group"> 
           <div class="form-select">
                <select name="category_id" v-model="category_id" required>
                  <option disabled selected value="">Select a Category</option>
-                 <option v-for="category in categories" :value="category.id" :key="category.id">
+                 <option v-for="category in categoryItems" :value="category.id" :key="category.id">
                    {{ category.name }}
                  </option>
                </select>
                <span>
                    <i class="fas fa-angle-down" aria-hidden="true"></i>
                 </span>
+                <div class="cc-category">
+                  <p v-for="category in taskItems.categories" :key="category.id">
+                  {{ category.name }}
+                  </p>
+                </div>
            </div>
       </div>
+
       <div class="form-group margin-t-10">
             <textarea 
             placeholder="Enter a Description" 
             id="description" spellcheck="true" 
-            v-model="items.description">
+            @change="describe"
+            :value="description || taskItems.description">
             </textarea>
       </div>
+
       <div class="form-group"> 
           <div class="form-select">
-               <select name="priority" v-model="items.priority" required>
+               <select name="priority" v-model="taskItems.priority" required>
                  <option disabled selected value="">Choose Priority Level</option>
-                 <option value="low" :selected="items.priority == 'low'">low</option>
-                 <option value="medium" :selected="items.priority == 'medium'">medium</option>
-                 <option value="high" :selected="items.priority== 'high'">high</option>
+                 <option value="low" :selected="taskItems.priority == 'low'">low</option>
+                 <option value="medium" :selected="taskItems.priority == 'medium'">medium</option>
+                 <option value="high" :selected="taskItems.priority== 'high'">high</option>
                </select>
                <span>
                    <i class="fas fa-angle-down" aria-hidden="true"></i>
                 </span>
            </div>
       </div>
+
       <div class="form-group">
       <div class="container-tenor">
           <div class="tenor-range">
-            <date-picker :placeholder="taskItems.start_date || 'Start Date'" v-model="items.start_date" valueType="format"></date-picker>
+            <date-picker :placeholder="taskItems.start_date || 'Start Date'" v-model="start_date" valueType="format"></date-picker>
           </div>
           <div class="tenor-range">
-            <date-picker :placeholder="taskItems.start_date || 'End Date'" v-model="items.end_date" valueType="format"></date-picker>
+            <date-picker :placeholder="taskItems.end_date || 'End Date'" v-model="end_date" valueType="format"></date-picker>
           </div>
       </div>
       </div>
+
       <div class="form-group margin-t-10 default-flex-entry">
           <div class="upload-box">
               <label class ="upload-button" for="upload_file"> Select Image
@@ -65,11 +76,12 @@
               </label>
           </div>
       </div>
+
       <div class="form-group margin-t-10 default-flex-entry">
               <div class="width-fix margin-t-10 checkbox">
-                  <input type="checkbox" id="access" true-value="1" false-value="0" v-model="items.access">
-                  <label for="access" v-if="items.access == 0">Mark as Private</label>
-                  <label for="access" v-else-if="items.access == 1">Switch to Public</label>
+                  <input type="checkbox" id="access" true-value="1" false-value="0" v-model="taskItems.access">
+                  <label for="access" v-if="taskItems.access == 0">Mark as Private</label>
+                  <label for="access" v-else-if="taskItems.access == 1">Switch to Public</label>
               </div>
       </div>
       
@@ -86,12 +98,11 @@
                 Go Again !
           </button>
         </div>
-        
       </div>
       
   </div>
-  <div class="comments-container" v-if="items.id">
-        <comment :task="items.id" :comments="taskComments"></comment>
+  <div class="comments-container" v-if="taskItems.id">
+        <comment :task="taskItems.id" :comments="taskComments"></comment>
   </div>
   
   </div>
@@ -110,27 +121,28 @@ import FileUpload from "@/common/mixins/fileUpload";
 
 export default {
   name: "task",
+   props: {
+    slug: {
+      type: String
+    },
+    task: {
+      type: Object
+    },
+    categories: {
+      type: Array
+    }
+  },
   mixins: [
       BreadCrumbs,
       FileUpload,
       TaskCrud
   ],
-  props: {
-    categories: {
-        type: Array,
-        required: true
-        /*validator: function(obj) {
-        }*/
-    }
-  },
   components: {
     Comment,
     DatePicker
   },
    created() {
-    this.getTask(this.uniqueId);
-    this.getAllComments(this.uniqueId);
-    this.setBreadcrumbs([
+     this.setBreadcrumbs([
       { 
         name: 'dashboard', 
         to:   'dashboardHome'
@@ -140,38 +152,53 @@ export default {
         to:   'tasks'
       },
       { 
-        name: this.page, 
+        name: this.slug, 
           to: 'viewTask'
       }
     ]);
+     if(this.task === undefined) {
+       this.getTask(this.uniqueId);
+       this.getAllCategories();
+     }
+     this.getAllComments(this.uniqueId);
   },
    data() {
     return {
       uniqueId: this.$route.params.id,
-      page: this.$route.params.task,
+      description: '',
+      start_date: '',
+      end_date: '',
       category_id: '',
-      items: [],
       thumbnail: '',
       loading: false
     };
   },
   computed: {
     ...mapGetters({
-      task: "task/task",
+      currentTask: "task/task",
+      categoryList: "category/categories",
       taskComments: "comment/comments"
     }),
     taskItems() {
-        return {...this.task};
-    }
-  },
-  watch: {
-    taskItems(itemState) {
-      this.items = itemState;
+      if(this.task !== undefined) {
+        return {...this.task}
+      }
+        return {...this.currentTask};
+    },
+    categoryItems() {
+      if(this.categories !== undefined) {
+        return {...this.categories}
+      }
+        return {...this.categoryList};
     }
   },
   methods: { 
+    describe(e) {
+      this.description = e.target.value
+    },
     ...mapActions({
       getTask: "task/getTask",
+      getAllCategories: "category/getAllCategories",
       getAllComments: "comment/getAllComments",
       updateTask: "task/updateTask",
       deleteTask: "task/deleteTask"

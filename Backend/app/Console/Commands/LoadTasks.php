@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Task;
 use Elasticsearch\Client;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Console\Command;
 
 class LoadTasks extends Command
@@ -29,11 +30,11 @@ class LoadTasks extends Command
      */
     private $elasticsearch;
 
-    public function __construct(Client $elasticsearch)
+    public function __construct(Client $elasticSearch)
     {
         parent::__construct();
 
-        $this->elasticsearch = $elasticsearch;
+        $this->elasticSearch = $elasticSearch;
     }
 
     /**
@@ -47,13 +48,12 @@ class LoadTasks extends Command
 
         foreach (Task::cursor() as $task)
         {
-            $this->elasticsearch->index([
+            $this->elasticSearch->index([
                 'index' => $task->getSearchIndex(),
                 'type' => $task->getSearchType(),
                 'id' => $task->getKey(),
-                'description' => $task->toSearchArray(),
+                'body' => $task->toSearchArray(),
             ]);
-
             $this->output->write('.');
         }
 
